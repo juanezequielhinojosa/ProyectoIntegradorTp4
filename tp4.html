@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Propuesta de Intervención Educativa con IA</title>
+    <style>
+      :root {
+        --primary: #00e5ff;
+        --secondary: #7c4dff;
+        --accent: #ff4081;
+        --dark: #121212;
+        --darker: #0a0a0a;
+        --light: #e0e0e0;
+        --gray: #424242;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+        color: var(--light);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+        position: relative;
+        display: inline-block;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary), transparent);
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        color: var(--light);
+        margin-bottom: 2rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+      }
+
+      .card {
+        background: rgba(30, 30, 30, 0.7);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(124, 77, 255, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .challenge-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .challenge-card {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      .module-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .info-item {
+        background: rgba(40, 40, 40, 0.7);
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+        border-left: 3px solid var(--primary);
+        transition: all 0.3s ease;
+      }
+
+      .info-item:hover {
+        border-left-color: var(--accent);
+        transform: scale(1.05);
+      }
+
+      .info-item h3 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+      }
+
+      .plan-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .plan-table th {
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        color: var(--darker);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+      }
+
+      .plan-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--gray);
+        background: rgba(40, 40, 40, 0.7);
+      }
+
+      .plan-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .plan-table tr:hover td {
+        background: rgba(50, 50, 50, 0.7);
+      }
+
+      .results {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .result-item {
+        background: rgba(40, 40, 40, 0.7);
+        padding: 1.5rem;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .result-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .result-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark);
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+
+      .floating-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .floating-element {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--primary);
+        border-radius: 50%;
+        opacity: 0.5;
+        animation: float 15s infinite linear;
+      }
+
+      .floating-element:nth-child(2n) {
+        background: var(--secondary);
+        width: 15px;
+        height: 15px;
+        animation-duration: 20s;
+      }
+
+      .floating-element:nth-child(3n) {
+        background: var(--accent);
+        width: 8px;
+        height: 8px;
+        animation-duration: 25s;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+          transform: translate(100vw, 100vh) rotate(360deg);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+        }
+        to {
+          text-shadow: 0 0 20px rgba(0, 229, 255, 0.8),
+            0 0 30px rgba(124, 77, 255, 0.6);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(0, 229, 255, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 229, 255, 0);
+        }
+      }
+
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.2rem;
+        }
+
+        .container {
+          padding: 1rem;
+        }
+
+        .plan-table {
+          display: block;
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="floating-elements">
+      <div class="floating-element" style="top: 10%; left: 5%"></div>
+      <div class="floating-element" style="top: 20%; left: 80%"></div>
+      <div class="floating-element" style="top: 40%; left: 30%"></div>
+      <div class="floating-element" style="top: 60%; left: 70%"></div>
+      <div class="floating-element" style="top: 80%; left: 10%"></div>
+      <div class="floating-element" style="top: 90%; left: 60%"></div>
+    </div>
+
+    <div class="container">
+      <header>
+        <h1>Propuesta de Intervención Educativa con IA</h1>
+        <p class="subtitle">
+          Transformando el modelo pedagógico hacia un enfoque dialógico y
+          participativo mediante la integración de herramientas de inteligencia
+          artificial
+        </p>
+      </header>
+
+      <section class="card fade-in">
+        <h2>Desafío Pedagógico</h2>
+        <div class="challenge-section">
+          <div class="challenge-card card">
+            <h3>Problema Identificado</h3>
+            <p>
+              Falta de diálogo en foros, baja participación estudiantil y
+              retroalimentación limitada en la plataforma Moodle de UNJu
+              Virtual, evidenciando un modelo pedagógico de tipo
+              bancario/transmisivo.
+            </p>
+          </div>
+          <div class="challenge-card card">
+            <h3>Objetivo de la Intervención</h3>
+            <p>
+              Transformar la experiencia de aprendizaje de los estudiantes de un
+              modelo bancario a uno más participativo y dialógico, utilizando
+              herramientas de IA y recursos interactivos.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card fade-in">
+        <h2>
+          Módulo Ficticio: "Aprendizaje Interactivo y Análisis de Información
+          con IA"
+        </h2>
+        <div class="module-info">
+          <div class="info-item">
+            <h3>Duración</h3>
+            <p>4 semanas</p>
+          </div>
+          <div class="info-item">
+            <h3>Curso Destino</h3>
+            <p>Recuperación y Análisis de Información (RAI)</p>
+          </div>
+          <div class="info-item">
+            <h3>Nivel</h3>
+            <p>Posgrado</p>
+          </div>
+          <div class="info-item">
+            <h3>Plataforma</h3>
+            <p>Moodle con integración de IA</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card fade-in">
+        <h2>Plan de Actividades</h2>
+        <table class="plan-table">
+          <thead>
+            <tr>
+              <th>Semana</th>
+              <th>Actividad</th>
+              <th>Herramienta IA / Versátil</th>
+              <th>Rol Pedagógico</th>
+              <th>Impacto Esperado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Lectura de Unidad 1 y cuestionario inicial</td>
+              <td>ChatGPT con conector Moodle</td>
+              <td>
+                Responder dudas frecuentes y generar preguntas de reflexión
+                basadas en los PDFs
+              </td>
+              <td>
+                Facilita comprensión y fomenta participación inicial; reduce
+                sensación de aprendizaje pasivo
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Debate en foro sobre casos prácticos</td>
+              <td>IA generadora de escenarios de debate</td>
+              <td>
+                Crear escenarios de discusión a partir de ejemplos del curso
+              </td>
+              <td>
+                Aumenta interacción entre estudiantes; promueve pensamiento
+                crítico y diálogo
+              </td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Actividad práctica grupal: análisis de dataset</td>
+              <td>NotebookLM</td>
+              <td>
+                Asistir en el análisis de datos y generar retroalimentación
+                automática
+              </td>
+              <td>
+                Mejora trabajo colaborativo; permite tutoría personalizada sin
+                sobrecargar al docente
+              </td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Presentación de informe final + autoevaluación</td>
+              <td>H5P (interactividad)</td>
+              <td>
+                Crear cuestionarios y ejercicios interactivos para
+                autoevaluación y feedback inmediato
+              </td>
+              <td>
+                Evalúa aprendizaje de manera dinámica; fomenta reflexión y
+                autonomía
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card fade-in">
+        <h2>Resultados Esperados</h2>
+        <div class="results">
+          <div class="result-item">
+            <div class="result-icon pulse">✓</div>
+            <div>
+              <h3>Incremento en la interacción</h3>
+              <p>
+                Mayor colaboración entre estudiantes mediante actividades
+                grupales y debates
+              </p>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="result-icon pulse">✓</div>
+            <div>
+              <h3>Mejora en la comprensión</h3>
+              <p>
+                Asistencia automatizada para facilitar el entendimiento de
+                contenidos complejos
+              </p>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="result-icon pulse">✓</div>
+            <div>
+              <h3>Retroalimentación personalizada</h3>
+              <p>Respuestas más rápidas y adaptadas a cada estudiante</p>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="result-icon pulse">✓</div>
+            <div>
+              <h3>Transformación del rol docente</h3>
+              <p>De expositor a guía y facilitador del aprendizaje</p>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="result-icon pulse">✓</div>
+            <div>
+              <h3>Transición hacia modelo dialógico</h3>
+              <p>Alineación con los principios de educación 5.0</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="card fade-in">
+        <h2>Reflexión Crítica</h2>
+        <p style="line-height: 1.6; margin-bottom: 1rem">
+          Usar herramientas de inteligencia artificial como ChatGPT o NotebookLM
+          tiene muchas ventajas, pero también requiere cuidado y
+          responsabilidad. En primer lugar, es fundamental proteger la
+          privacidad de los estudiantes. Toda la información cargada en Moodle
+          debe mantenerse segura, y los datos que procesa la IA no deben
+          filtrarse ni utilizarse para otros fines.
+        </p>
+
+        <p style="line-height: 1.6; margin-bottom: 1rem">
+          Otro punto clave es el sesgo que puede tener la IA. A veces, las
+          respuestas automáticas pueden ser incorrectas, incompletas o no
+          adecuarse al contexto. Si los estudiantes confían únicamente en estas
+          herramientas, podrían aprender información errónea. Por eso, el rol
+          docente sigue siendo esencial: orientar, supervisar y validar las
+          sugerencias generadas por la IA.
+        </p>
+
+        <p style="line-height: 1.6; margin-bottom: 1rem">
+          También es necesario garantizar que todos los estudiantes tengan
+          acceso a estas tecnologías y sepan cómo usarlas. De lo contrario,
+          podríamos profundizar la brecha digital entre quienes dominan estas
+          herramientas y quienes no. La inclusión digital es parte central de
+          una intervención pedagógica justa y participativa.
+        </p>
+
+        <p style="line-height: 1.6">
+          Finalmente, debemos preguntarnos si estas herramientas realmente
+          promueven el diálogo, la autonomía y el aprendizaje profundo, o si
+          solo se terminan usando para “hacer la tarea”. La IA debe ser una
+          oportunidad para que los estudiantes participen más, piensen de forma
+          crítica y aprendan de manera activa, no simplemente un recurso para
+          obtener respuestas rápidas.
+        </p>
+      </section>
+    </div>
+
+    <script>
+      // Animación de elementos al hacer scroll
+      document.addEventListener("DOMContentLoaded", function () {
+        const fadeElements = document.querySelectorAll(".fade-in");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        fadeElements.forEach((element) => {
+          observer.observe(element);
+        });
+
+        // Efecto de partículas flotantes
+        const floatingContainer = document.querySelector(".floating-elements");
+        for (let i = 0; i < 15; i++) {
+          const element = document.createElement("div");
+          element.classList.add("floating-element");
+          element.style.top = `${Math.random() * 100}%`;
+          element.style.left = `${Math.random() * 100}%`;
+          element.style.animationDelay = `${Math.random() * 20}s`;
+          floatingContainer.appendChild(element);
+        }
+      });
+    </script>
+  </body>
+</html>
